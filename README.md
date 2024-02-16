@@ -64,3 +64,12 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## Clone this project
+
+Jalankan di terminal:
+1. `composer install`
+2. `php artisan package:discover --ansi`
+3. `php artisan key:generate`
+4. Konfigurasi database pgsql, kemudian `php artisan migrate`
+Note: aktifkan extension=zip di php.ini jika ada masalah pada perintah composer install.
