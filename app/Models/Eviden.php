@@ -9,4 +9,9 @@ class Eviden extends Model
 {
     use HasFactory;
     protected $table = 'eviden';
+    protected $fillable = ['perbaikan_id', 'filename'];
+
+    public function perbaikan() {
+        return $this->belongsTo(Perbaikan::class);
+    }
 }

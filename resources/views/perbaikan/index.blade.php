@@ -8,48 +8,7 @@
     <img class="animation__shake" src="/adminlte/dist/img/AdminLTELogo.png" alt="AdminLTELogo" height="60" width="60">
   </div>
 
-
-  <!-- Main Sidebar Container -->
-  <aside class="main-sidebar sidebar-dark-primary elevation-4">
-    <!-- Brand Logo -->
-    <a href="index3.html" class="brand-link">
-      <img src="/adminlte/dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-      <span class="brand-text font-weight-light">AdminLTE 3</span>
-    </a>
-
-    <!-- Sidebar -->
-    <div class="sidebar">
-      <!-- Sidebar user panel (optional) -->
-      <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-        <div class="image">
-          <img src="/adminlte/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
-        </div>
-        <div class="info">
-          <a href="#" class="d-block">Admin</a>
-        </div>
-      </div>
-
-      <!-- SidebarSearch Form -->
-      <div class="form-inline">
-        <div class="input-group" data-widget="sidebar-search">
-          <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
-          <div class="input-group-append">
-            <button class="btn btn-sidebar">
-              <i class="fas fa-search fa-fw"></i>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Sidebar Menu -->
-      <nav class="mt-2">
-      </nav>
-      <!-- /.sidebar-menu -->
-    </div>
-    <!-- /.sidebar -->
-  </aside>
-
-  <!-- Content Wrapper. Contains page content -->
+  <!-- Content Wrapper. Berisi konten di dalam halaman -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <div class="content-header">
@@ -61,7 +20,7 @@
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Dashboard</li>
+              <li class="breadcrumb-item active"><a href="{{ route('perbaikan.index') }}">Dashboard</a></li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -77,38 +36,62 @@
           <div class="card-header">
             <h3 class="card-title">Tabel Perbaikan</h3>
             <div class="card-tools">
-                  <div class="input-group input-group-sm" style="width: 250px;">
-                    <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
-                    <div class="input-group-append">
-                      <button type="submit" class="btn btn-default">
-                        <i class="fas fa-search"></i>
-                      </button>
-                    </div>
-                  </div>
+              <div class="input-group input-group-sm" style="width: 250px;">
+                <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
+                <div class="input-group-append">
+                  <button type="submit" class="btn btn-default">
+                    <i class="fas fa-search"></i>
+                  </button>
+                </div>
+                <!-- <a class="btn btn-primary text-white" href="{{ route('perbaikan.create') }}">
+                  <i class="fa-solid fa-pen-to-square"></i>Tambah baru</a> -->
+              </div>
             </div>
           </div>
           <!-- /.card-header -->
-          <div class="card-body">
-            <table class="table table-bordered table-hover text-nowrap">
+          <div class="card-body table-responsive-xxl">
+            @if (session('success'))
+              <div class="alert alert-success">{{ session('success') }}</div>
+            @endif
+            @if (session('error'))
+              <div class="alert alert-danger">{{ session('error') }}</div>
+            @endif
+            <table class="table table-bordered table-hover">
               <thead>
               <tr>
-                <th>No</th>
+                <th class="text-center">No</th>
                 <th>Judul</th>
-                <th>Tanggal</th>
+                <th>Keterangan</th>
+                <th>Tanggal Laporan</th>
                 <th>Status</th>
               </tr>
               </thead>
               <tbody>
                 @forelse ($listperbaikan as $list)
               <tr>
-                <td>{{ $list['id'] }}</td>
-                <td>{{ $list['judul'] }}</td>
-                <td>{{ $list['tanggal'] }}</td>
-                <td>{{ $list['status'] }}</td>
+                <td class="text-center">{{ $loop->iteration }}</td>
+                <td>{{ $list->judul }}</td>
+                <td>{{ $list->keterangan }}</td>
+                <td>{{ $list->created_at }}</td>
+                <td>{{ $list->status }}</td>
+                <td>
+                  <a href="{{ route('perbaikan.show', ['id' => $list->id]) }}" class="btn btn-secondary btn-sm">show</a>
+                  <a href="{{ route('perbaikan.edit', ['id' => $list->id]) }}" class="btn btn-secondary btn-sm">edit</a>
+                  <a href="#" class="btn btn-sm btn-danger" onclick="
+                    event.preventDefault();
+                    if (confirm('Anda yakin ingin menghapus daya?')) {
+                      document.getElementById('delete-row-{{ $list->id }}').submit();
+                    }">
+                    delete
+                  </a>
+                  <form id="delete-row-{{ $list->id }}" action="{{ route('perbaikan.destroy', ['id' => $list->id]) }}" method="POST">
+                      <input type="hidden" name="_method" value="DELETE">
+                      @csrf
+                  </form>
               </tr>
               @empty
               <tr>
-                <td colspan="4">Data kosong</td>
+                <td colspan="5">Data kosong</td>
               </tr>
               @endforelse
             </table>

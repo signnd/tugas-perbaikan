@@ -2238,6 +2238,9 @@ readers do not read off random characters that represent icons */
 .fa-hourglass-start:before {
   content: "\f251"; }
 
+.fa-house:before {
+  content: "\f015"; }
+
 .fa-house-damage:before {
   content: "\f6f1"; }
 
