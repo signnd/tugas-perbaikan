@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\EvidenController;
 use App\Http\Controllers\PerbaikanController;
 use Illuminate\Support\Facades\Route;
 
@@ -26,6 +27,9 @@ Route::get('perbaikan/{id}', [PerbaikanController::class, 'show'])->name('perbai
 Route::get('perbaikan/{id}/edit', [PerbaikanController::class, 'edit'])->name('perbaikan.edit');
 Route::put('perbaikan/{id}', [PerbaikanController::class, 'update'])->name('perbaikan.update');
 Route::delete('perbaikan/{id}', [PerbaikanController::class, 'destroy'])->name('perbaikan.destroy');
+
+// Route::get('eviden/{perbaikan_id}/upload', [EvidenController::class, 'index']);
+// Route::delete('eviden/{perbaikan_id}', [EvidenController::class, 'destroy'])->name('eviden.destroy');
 
 Route::prefix('admin')->group(function () {
     Route::get('perbaikan', [PerbaikanController::class, 'index'])->name('admin.perbaikan.index');

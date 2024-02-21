@@ -6,10 +6,10 @@ use App\Http\Requests\StorePerbaikanRequest;
 use App\Http\Requests\UpdatePerbaikanRequest;
 use App\Models\Perbaikan;
 use App\Models\Eviden;
-use Illuminate\Contracts\Cache\Store;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
@@ -51,7 +51,6 @@ class PerbaikanController extends Controller
             'judul' => $validData['judul'],
             'keterangan' => $validData['keterangan'],
         ]);
-        // $perbaikanId = $perbaikan->id;
         
         // upload file
         if ($request->hasFile('photo')) {
@@ -64,20 +63,6 @@ class PerbaikanController extends Controller
                 ]);
             }
         }
-        //    $uploadPath = 'storage/eviden/';
-        //    $i = 1;
-        //    foreach($request->file('photo') as $photo) {
-        //        $extension = $photo->getClientOriginalExtension();
-        //        $filename = time().$i++.'.'.$extension;
-        //        $photo->move($uploadPath, $filename);
-        //        $finalPhotoPath = $uploadPath.$filename;
-        //        $newEviden = new Eviden();
-        //        $newEviden->filename = $finalPhotoPath;
-        //        $newEviden->perbaikan_id = $perbaikanId;
-        //        $newEviden->save();
-        //    }
-        //}
-        // insert eviden
         if ($perbaikan) {
             return redirect(route('perbaikan.index'))->with('success', 'Data perbaikan berhasil diinput');
         }
@@ -112,26 +97,25 @@ class PerbaikanController extends Controller
     /**
      * Fungsi update() agar data dapat diperbarui
      */
-    public function update(UpdatePerbaikanRequest $request, Perbaikan $perbaikan): RedirectResponse
+    public function update(UpdatePerbaikanRequest $request, string $id): RedirectResponse
     {
-        // // validasi data
-        // $perbaikan = Perbaikan::findOrFail($id);
-        $validData = $request->validated();
-        $request->validate(
-            [
-                'judul' => $validData['judul'],
-                'keterangan' => $validData['keterangan'],
-            ]
-        );
-    
-        // insert eviden
-        // if($perbaikan->update($validData)) {
-        //    $perbaikan->eviden()->sync($validData['perbaikan_id']);
-        //    return redirect(route('perbaikan.index'))->with('success', 'Data perbaikan berhasil diinput');
-        // }
-        
-        $perbaikan->update($request->all());
-        return redirect(route('perbaikan.index'))->with('success', 'Data perbaikan berhasil diinput'); 
+        // validasi data
+        $perbaikan = Perbaikan::findOrFail($id);
+        if ($request->hasFile('photo')) {
+            $files = $request->file('photo');
+            foreach ($files as $file) {
+                $file->storeAs('public/eviden', $file->hashName());
+                Eviden::create([
+                    'perbaikan_id' => $perbaikan->id,
+                    'filename' => $file->hashName()
+                ]);
+            }
+        }
+
+        //$perbaikan->update($request->all());
+        if ($perbaikan->update($request->validated())) {
+            return redirect(route('perbaikan.index'))->with('success', 'Data perbaikan berhasil diinput'); 
+        }
     }
 
     /**
@@ -140,6 +124,8 @@ class PerbaikanController extends Controller
     public function destroy(string $id): RedirectResponse
     {
         $data = Perbaikan::findOrFail($id);
+        Eviden::where('perbaikan_id', $id)->delete();
+        
         if ($data->delete()) {
             return redirect(route('perbaikan.index'))->with('success', 'Data berhasil dihapus');
         } else {

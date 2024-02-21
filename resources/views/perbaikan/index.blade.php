@@ -75,11 +75,11 @@
                 <td>{{ $list->created_at }}</td>
                 <td>{{ $list->status }}</td>
                 <td>
-                  <a href="{{ route('perbaikan.show', ['id' => $list->id]) }}" class="btn btn-secondary btn-sm">show</a>
+                  <a href="{{ route('perbaikan.show', ['id' => $list->id]) }}" class="btn btn-primary btn-sm">show</a>
                   <a href="{{ route('perbaikan.edit', ['id' => $list->id]) }}" class="btn btn-secondary btn-sm">edit</a>
                   <a href="#" class="btn btn-sm btn-danger" onclick="
                     event.preventDefault();
-                    if (confirm('Anda yakin ingin menghapus daya?')) {
+                    if (confirm('Anda yakin ingin menghapus data?')) {
                       document.getElementById('delete-row-{{ $list->id }}').submit();
                     }">
                     delete

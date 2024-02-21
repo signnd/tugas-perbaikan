@@ -30,7 +30,9 @@
             <!-- Default box -->
             <div class="card">
               <div class="card-header">
-                <h3 class="card-title">Title</h3>
+                <h3 class="card-title">{{ $listperbaikan->judul }}</h3>
+                <div class="btn-group"><a href="{{ route('perbaikan.edit', ['id' => $listperbaikan->id]) }}" class="btn btn-primary">Edit</a></div>
+                <div class="btn-group"><a href="#" class="btn btn-danger">Delete</a></div>
               </div>
               <div class="card-body">
                 <div class="row">
