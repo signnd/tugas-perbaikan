@@ -1,5 +1,4 @@
-<!-- Base Layour AdminLTE -->
-
+<!-- Base Layout AdminLTE -->
 <!DOCTYPE html>
 <html lang="en">
   <head>

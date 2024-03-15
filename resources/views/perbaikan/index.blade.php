@@ -34,9 +34,10 @@
       <div class="col-12">
         <div class="card">
           <div class="card-header">
-            <h3 class="card-title">Tabel Perbaikan</h3>
+            <!-- <h3 class="card-title text-lg">Tabel Perbaikan</h3> -->
+            <a href="{{ route('perbaikan.create') }}" class="btn btn-success btn-md">Tambah</a>
             <div class="card-tools">
-              <div class="input-group input-group-sm" style="width: 250px;">
+              <div class="input-group input-group-sm py-2" style="width: 300px;">
                 <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
                 <div class="input-group-append">
                   <button type="submit" class="btn btn-default">
@@ -75,14 +76,16 @@
                 <td>{{ $list->created_at }}</td>
                 <td>{{ $list->status }}</td>
                 <td>
-                  <a href="{{ route('perbaikan.show', ['id' => $list->id]) }}" class="btn btn-primary btn-sm">show</a>
-                  <a href="{{ route('perbaikan.edit', ['id' => $list->id]) }}" class="btn btn-secondary btn-sm">edit</a>
+                  <a href="{{ route('perbaikan.show', ['id' => $list->id]) }}" class="btn btn-primary btn-sm">
+                    <i class="fas fa-eye"></i> Lihat</a>
+                  <a href="{{ route('perbaikan.edit', ['id' => $list->id]) }}" class="btn btn-secondary btn-sm">
+                    <i class="fas fa-pen-square"></i> Edit</a>
                   <a href="#" class="btn btn-sm btn-danger" onclick="
                     event.preventDefault();
                     if (confirm('Anda yakin ingin menghapus data?')) {
                       document.getElementById('delete-row-{{ $list->id }}').submit();
                     }">
-                    delete
+                    <i class="fas fa-trash"></i> Hapus
                   </a>
                   <form id="delete-row-{{ $list->id }}" action="{{ route('perbaikan.destroy', ['id' => $list->id]) }}" method="POST">
                       <input type="hidden" name="_method" value="DELETE">

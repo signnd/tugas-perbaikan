@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\EvidenController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PerbaikanController;
 use Illuminate\Support\Facades\Route;
 
@@ -16,7 +16,26 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.login');
+});
+
+// public
+Route::get('login', [AuthController::class, 'login'])->name('auth.login');
+Route::post('authlogin', [AuthController::class, 'authlogin'])->name('auth.authlogin');
+Route::get('logout', [AuthController::class, 'logout'])->name('auth.logout');
+
+// Group Private
+Route::group(['middleware' => ['auth']], function() {
+    // Admin
+    Route::group(['middleware' => ['cekakses:admin']], function () {
+        //Route::get('perbaikan', [PerbaikanController::class, 'dashadmin']);
+        Route::get('dashboard', [PerbaikanController::class, 'dashadmin'])->name('perbaikan.dashboard');
+    });
+    // Pegawai
+    Route::group(['middleware' => ['cekakses:pegawai']], function () {
+        //Route::get('perbaikan', [PerbaikanController::class, 'dashpegawai']);
+        Route::get('dashboardpegawai', [PerbaikanController::class, 'dashpegawai'])->name('perbaikan.dashboardpegawai');
+    });
 });
 
 // Route untuk perbaikan
@@ -32,8 +51,7 @@ Route::delete('perbaikan/{id}', [PerbaikanController::class, 'destroy'])->name('
 // Route::delete('eviden/{perbaikan_id}', [EvidenController::class, 'destroy'])->name('eviden.destroy');
 
 Route::prefix('admin')->group(function () {
-    Route::get('perbaikan', [PerbaikanController::class, 'index'])->name('admin.perbaikan.index');
-    //Route::get('perbaikan/{id}', [PerbaikanController::class, 'show'])->name('perbaikan.show');
+    Route::get('perbaikan', [PerbaikanController::class, 'index'])->name('perbaikan.index');
 });
 
 Route::prefix('public')->group(function() {

@@ -30,9 +30,20 @@
             <!-- Default box -->
             <div class="card">
               <div class="card-header">
-                <h3 class="card-title">{{ $listperbaikan->judul }}</h3>
+                <h3 class="card-title my-1"><strong>{{ $listperbaikan->judul }}</strong></h3>
+                <div class="card-tools">
                 <div class="btn-group"><a href="{{ route('perbaikan.edit', ['id' => $listperbaikan->id]) }}" class="btn btn-primary">Edit</a></div>
-                <div class="btn-group"><a href="#" class="btn btn-danger">Delete</a></div>
+                <div class="btn-group"><button class="btn btn-danger" onclick="
+                    event.preventDefault();
+                    if (confirm('Anda yakin ingin menghapus data?')) {
+                      document.getElementById('delete-row-{{ $listperbaikan->id }}').submit();
+                    }">
+                    Delete</button>
+                    <form id="delete-row-{{ $listperbaikan->id }}" action="{{ route('perbaikan.destroy', ['id' => $listperbaikan->id]) }}" method="POST">
+                      <input type="hidden" name="_method" value="DELETE">
+                      @csrf
+                  </form></div>
+                </div>
               </div>
               <div class="card-body">
                 <div class="row">

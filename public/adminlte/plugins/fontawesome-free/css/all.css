@@ -3303,6 +3303,9 @@ readers do not read off random characters that represent icons */
 .fa-ribbon:before {
   content: "\f4d6"; }
 
+.fa-right-from-bracket:before {
+  content: "\f2f5"; }
+
 .fa-ring:before {
   content: "\f70b"; }
 

@@ -32,7 +32,7 @@
 
     <!-- Main content -->
     <div class="container px-3">
-    <div class="card card-secondary">
+    <div class="card card-light">
       <div class="card-header">
         <h3 class="card-title">Tambah Data</h3>
       </div>
@@ -43,8 +43,8 @@
         <div class="card-body">
         @if ($errors->any())
                       <div class="alert alert-danger">
-        <div class="alert-title"><h4>Whoops!</h4></div>
-          There are some problems with your input.
+        <div class="alert-title"><h4>Ada kesalahan</h4></div>
+                Mohon maaf, ada kesalahan dalam penginputan data.
           <ul>
             @foreach ($errors->all() as $error)
               <li>{{ $error }}</li>
@@ -88,7 +88,7 @@
           </div> -->
         </div>
         <!-- /.card-body -->
-        <div class="card-footer">
+        <div class="px-3">
           <button type="submit" class="btn btn-primary">Submit</button>
         </div>
       </form>

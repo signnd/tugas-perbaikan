@@ -7,11 +7,12 @@ use App\Http\Requests\UpdatePerbaikanRequest;
 use App\Models\Perbaikan;
 use App\Models\Eviden;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
+use App\Http\Controllers\AuthController;
+use Illuminate\Support\Facades\Auth;
 
 class PerbaikanController extends Controller
 {
@@ -20,11 +21,16 @@ class PerbaikanController extends Controller
      */
     public function index()
     {
+        $user = Auth::user();
         $page_meta = [
             'title' => 'Index',
         ];
-        $data = Perbaikan::with('eviden')->get();
-        return response(view('perbaikan.index', ['listperbaikan' => $data, 'meta' => $page_meta]));
+        if ($user->role == 'admin') {
+            $data = Perbaikan::with('eviden')->get();
+        } else {
+            $data = Perbaikan::with('eviden')->where('user_id', $user->id)->get();
+        }
+        return response(view('perbaikan.index', ['listperbaikan' => $data, 'meta' => $page_meta, 'user' => $user]));
     }
 
     /**
@@ -32,6 +38,7 @@ class PerbaikanController extends Controller
      */
     public function create(): Response
     {
+        $user = Auth::user();
         $page_meta = [
             'title' => 'Tambah Data Baru',
         ];
@@ -43,6 +50,7 @@ class PerbaikanController extends Controller
      */
     public function store(StorePerbaikanRequest $request): RedirectResponse
     {
+        $user = Auth::user();
         // validasi data
         $validData = $request->validated();
 
@@ -50,6 +58,7 @@ class PerbaikanController extends Controller
         $perbaikan = Perbaikan::create([
             'judul' => $validData['judul'],
             'keterangan' => $validData['keterangan'],
+            'user_id' => $user->id
         ]);
         
         // upload file
@@ -73,6 +82,7 @@ class PerbaikanController extends Controller
      */
     public function show(Perbaikan $id): View
     {
+        $user = Auth::user();
         $evidens = Eviden::all();
         $page_meta = [
             'title' => 'Lihat Data',
@@ -89,6 +99,7 @@ class PerbaikanController extends Controller
      */
     public function edit(string $id): Response
     {
+        $user = Auth::user();
         $page_meta = ['title' => 'Edit Data'];
         $data = Perbaikan::findOrFail($id);
         return response(view('perbaikan.edit', ['listperbaikan' => $data, 'meta' => $page_meta]));
@@ -99,6 +110,7 @@ class PerbaikanController extends Controller
      */
     public function update(UpdatePerbaikanRequest $request, string $id): RedirectResponse
     {
+        $user = Auth::user();
         // validasi data
         $perbaikan = Perbaikan::findOrFail($id);
         if ($request->hasFile('photo')) {
@@ -123,6 +135,7 @@ class PerbaikanController extends Controller
      */
     public function destroy(string $id): RedirectResponse
     {
+        $user = Auth::user();
         $data = Perbaikan::findOrFail($id);
         Eviden::where('perbaikan_id', $id)->delete();
         
@@ -131,5 +144,23 @@ class PerbaikanController extends Controller
         } else {
             return redirect(route('perbaikan.index'))->with('error', 'Maaf, data belum berhasil dihapus');
         }
+    }
+
+    public function dashadmin() {
+        $user = Auth::user();
+        $page_meta = [
+            'title' => 'Dashboard Admin',
+        ];
+        $data = Perbaikan::with('eviden')->get();
+        return response(view('perbaikan.dashboard', ['meta' => $page_meta, 'user' => $user]));
+    }
+
+    public function dashpegawai() {
+        $user = Auth::user();
+        $page_meta = [
+            'title' => 'Dashboard Pegawai',
+        ];
+        $data = Perbaikan::with('eviden')->get();
+        return response(view('perbaikan.dashboardpegawai', ['meta' => $page_meta, 'user' => $user]));
     }
 }
